@@ -4,8 +4,6 @@ int motorPin1 = 12;
 int motorPin2 = 13;
 int enablePin = 3;
  
-// Vitesse du moteur
-int state = 0;
 
 void setup() {
     // Configuration des ports en mode "sortie"
@@ -18,28 +16,25 @@ void setup() {
 }
  
 void loop() {
-    // Valeur du potentiomètre
+    // Valeur du potentiomètre et mapping
     int sensorValue = analogRead(A0);
-    int poto = map(sensorValue, 0, 1023, -255, 255);
-
-    // Lecture de l'entier passé au port série
-    state = poto;
+    int pot = map(sensorValue, 0, 1023, -255, 255);
     //
     // Sens du mouvement
     //
-    if (state > 0) // avant
+    if (pot > 15) // avant
     {
       digitalWrite(motorPin1, 255); 
       digitalWrite(motorPin2, 0);
       Serial.print("Avant ");
-      Serial.println(state);
+      Serial.println(pot);
     }
-    else if (state < 0) // arrière
+    else if (pot < -15) // arrière
     {
       digitalWrite(motorPin1, 0); 
       digitalWrite(motorPin2, 255);
       Serial.print("Arriere ");
-      Serial.println(state);
+      Serial.println(pot);
     }
     else // Stop (freinage)
     {
@@ -50,8 +45,8 @@ void loop() {
     //
     // Vitesse du mouvement
     //
-    analogWrite(enablePin, abs(state));
-    Serial.println(poto);
+    analogWrite(enablePin, abs(pot));
+    Serial.println(pot);
 
     delay(100);
 }
